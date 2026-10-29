@@ -1,0 +1,310 @@
+/* ==========================================================================
+   Viewer mode styles
+   The page is a read-only save viewer: editing widgets are removed and the
+   values they used to hold are shown as plain text. viewer.js does the DOM
+   work; this file handles presentation.
+   ========================================================================== */
+
+body.viewer-mode {
+	background: radial-gradient(ellipse at top, #1f1f1f 0%, #0f0f0f 100%);
+	color: #e6e6e6;
+	line-height: 1.5;
+}
+
+#viewerNote {
+	margin-top: -0.25em;
+	margin-bottom: 1em;
+	opacity: 0.7;
+	font-style: italic;
+	font-size: 0.95em;
+}
+
+/* Export is not part of the viewer. The node stays in the DOM because the
+   original editor code writes to #exportField on every refresh. */
+#exportBlock,
+#lastSavedLabel {
+	display: none !important;
+}
+
+/* Anything viewer.js decides is an editing-only control. */
+body.viewer-mode .viewer-hidden {
+	display: none !important;
+}
+
+/* Editor container styling */
+body.viewer-mode #editor {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 24px 32px;
+	background: linear-gradient(180deg, rgba(30, 30, 30, 0.95) 0%, rgba(15, 15, 15, 0.95) 100%);
+	border: 1px solid #3a3a3a;
+	border-radius: 8px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Headings */
+body.viewer-mode h1 {
+	font-size: 2em;
+	margin-bottom: 0.25em;
+	letter-spacing: 0.02em;
+	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+body.viewer-mode h2 {
+	margin-top: 1.5em;
+	margin-bottom: 0.75em;
+	padding-bottom: 0.3em;
+	border-bottom: 1px solid #3a3a3a;
+	font-size: 1.4em;
+	letter-spacing: 0.01em;
+}
+
+body.viewer-mode h3 {
+	margin-top: 1.25em;
+	margin-bottom: 0.5em;
+	font-size: 1.15em;
+	opacity: 0.95;
+}
+
+/* Tabs */
+body.viewer-mode .tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin: 1em 0;
+	padding: 4px;
+	background: rgba(0, 0, 0, 0.4);
+	border: 1px solid #333;
+	border-radius: 6px;
+}
+
+body.viewer-mode .tab {
+	padding: 6px 14px;
+	background: linear-gradient(to bottom, #2a2a2a 0%, #1a1a1a 100%);
+	border: 1px solid #444;
+	border-radius: 4px;
+	transition: all 0.15s ease;
+	font-variant: small-caps;
+	font-weight: bold;
+	letter-spacing: 0.02em;
+}
+
+body.viewer-mode .tab:hover {
+	background: linear-gradient(to bottom, #3a3a3a 0%, #252525 100%);
+	border-color: #666;
+}
+
+body.viewer-mode .tabCurrent {
+	background: linear-gradient(to bottom, #4a4a4a 0%, #2a2a2a 100%);
+	border-color: #888;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Tab blocks */
+body.viewer-mode .tabBlock {
+	background: rgba(0, 0, 0, 0.25);
+	border: 1px solid #333;
+	border-radius: 6px;
+	padding: 16px 20px;
+	margin-top: 12px;
+}
+
+/* Plain-text stand-ins for values that used to live in inputs/selects. */
+body.viewer-mode .viewer-value {
+	white-space: pre-wrap;
+	word-break: break-word;
+	font-family: 'Consolas', 'Courier New', monospace;
+	color: #f0d98c;
+	background: rgba(0, 0, 0, 0.3);
+	padding: 1px 4px;
+	border-radius: 3px;
+}
+
+body.viewer-mode .viewer-multiline {
+	display: block;
+	max-width: 100%;
+	max-height: 18em;
+	overflow: auto;
+	font-family: 'Consolas', 'Courier New', monospace;
+	font-size: 12px;
+	line-height: 1.4;
+	margin: 4px 0;
+	padding: 6px 8px;
+	background: rgba(0, 0, 0, 0.4);
+	border: 1px solid #333;
+	border-radius: 4px;
+	color: #b8e6b8;
+}
+
+/* Yes/No state for checkboxes and radio buttons. */
+body.viewer-mode .viewer-state {
+	opacity: 0.9;
+	color: #a8d8ff;
+}
+
+/* Game-option rows that used to be toggle buttons. */
+body.viewer-mode .viewer-option {
+	font-variant: small-caps;
+	font-weight: bold;
+	color: #e0e0e0;
+}
+
+body.viewer-mode .viewer-option-state {
+	font-variant: normal;
+	font-weight: normal;
+	opacity: 0.75;
+	color: #b0b0b0;
+}
+
+/* Informational spans that used to look clickable. */
+body.viewer-mode .viewer-info {
+	border-bottom: none;
+	cursor: default;
+}
+
+/* Only tabs and the import controls keep a pointer cursor. */
+body.viewer-mode #editor a,
+body.viewer-mode #editor .crate,
+body.viewer-mode #editor .gardenTile,
+body.viewer-mode #editor .gardenSeed,
+body.viewer-mode #editor .templeGod,
+body.viewer-mode #editor .buff,
+body.viewer-mode #editor label {
+	cursor: default;
+}
+
+body.viewer-mode #editor .tab,
+body.viewer-mode #editor #importButton,
+body.viewer-mode #editor #importSaveFile,
+body.viewer-mode #editor #selImport {
+	cursor: pointer;
+}
+
+/* Read-only fields (kept hidden, but styled sanely if anything re-shows one). */
+body.viewer-mode input:disabled,
+body.viewer-mode select:disabled,
+body.viewer-mode textarea:disabled {
+	opacity: 1;
+	color: inherit;
+	-webkit-text-fill-color: currentColor;
+	background-color: transparent;
+	cursor: default;
+}
+
+body.viewer-mode input[readonly],
+body.viewer-mode textarea[readonly] {
+	cursor: default;
+}
+
+/* Tables */
+body.viewer-mode table {
+	width: 100%;
+	border-collapse: collapse;
+	background: rgba(0, 0, 0, 0.3);
+	border: 1px solid #333;
+	border-radius: 6px;
+	overflow: hidden;
+	margin: 12px 0;
+}
+
+body.viewer-mode thead tr {
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+}
+
+body.viewer-mode th {
+	padding: 8px 10px;
+	text-align: left;
+	font-weight: bold;
+	font-size: 0.9em;
+	letter-spacing: 0.02em;
+	border-bottom: 2px solid #444;
+	color: #d0d0d0;
+}
+
+body.viewer-mode td {
+	padding: 6px 10px;
+	border-bottom: 1px solid #2a2a2a;
+}
+
+body.viewer-mode tbody tr:hover {
+	background: rgba(255, 255, 255, 0.02);
+}
+
+body.viewer-mode tbody tr:last-child td {
+	border-bottom: none;
+}
+
+/* The building table's last column was only the mute button. */
+body.viewer-mode #buildTable thead th:last-child,
+body.viewer-mode #buildTable tbody tr > td:last-child {
+	display: none !important;
+}
+
+/* Stock-market columns 6-10 are editor simulation controls (mode, duration,
+   hidden flag, last tick, randomize). Keep the real save data. */
+body.viewer-mode #marketGoodsList .marketGoodRow > td:nth-child(n+6) {
+	display: none !important;
+}
+
+/* Import section styling */
+body.viewer-mode #importBlock {
+	background: rgba(0, 0, 0, 0.4);
+	border: 1px solid #444;
+	border-radius: 6px;
+	padding: 12px 16px;
+	margin: 16px 0;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+body.viewer-mode #importField {
+	width: 100%;
+	max-width: 600px;
+	background: rgba(0, 0, 0, 0.5);
+	border: 1px solid #444;
+	border-radius: 4px;
+	color: #e6e6e6;
+	padding: 6px 8px;
+	font-family: 'Consolas', 'Courier New', monospace;
+	font-size: 0.9em;
+	cursor: text;
+}
+
+body.viewer-mode #importButton,
+body.viewer-mode #importSaveFile {
+	display: inline-block;
+	padding: 6px 14px;
+	background: linear-gradient(to bottom, #3a3a3a 0%, #252525 100%);
+	border: 1px solid #555;
+	border-radius: 4px;
+	color: #e6e6e6;
+	text-decoration: none;
+	margin: 4px 6px 4px 0;
+	transition: all 0.15s ease;
+}
+
+body.viewer-mode #importButton:hover,
+body.viewer-mode #importSaveFile:hover {
+	background: linear-gradient(to bottom, #4a4a4a 0%, #303030 100%);
+	border-color: #777;
+}
+
+/* Crates/achievements/upgrades styling */
+body.viewer-mode .crate {
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+/* Options section */
+body.viewer-mode #options {
+	background: rgba(0, 0, 0, 0.25);
+	border: 1px solid #333;
+	border-radius: 6px;
+	padding: 12px 16px;
+	margin: 12px 0;
+}
+
+/* Stats and other sections */
+body.viewer-mode .framed {
+	background: rgba(0, 0, 0, 0.3);
+	border: 1px solid #444;
+	border-radius: 4px;
+}
