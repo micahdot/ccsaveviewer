@@ -17,7 +17,8 @@
 		"#importSaveFile", // import from file (label)
 		"#saveFileInput",
 		"#selImport",
-		"#abbrCheck"
+		"#abbrCheck",
+		"#copyImportantButton"
 	].join(",");
 
 	var IMPORT_CONTROL_IDS = { importField: true, saveFileInput: true };
@@ -338,7 +339,7 @@
 		for (var l = 0; l < links.length; l++) {
 			var a = links[l];
 			if (a.matches && a.matches(".tab")) { continue; }
-			if (a.id === "importButton" || a.id === "importSaveFile" || a.id === "selImport") { continue; }
+			if (a.id === "importButton" || a.id === "importSaveFile" || a.id === "selImport" || a.id === "copyImportantButton") { continue; }
 			if (a.classList.contains("option")) { continue; }
 			hide(a);
 		}
@@ -486,6 +487,82 @@
 				attributeFilter: ["disabled", "readonly"]
 			});
 		}
+	}
+
+	// "Copy important stuff" button
+	var copyBtn = byId("copyImportantButton");
+	if (copyBtn) {
+		copyBtn.addEventListener("click", function (e) {
+			e.preventDefault();
+			try {
+				var parts = [];
+				// Buildings
+				var buildingMap = {
+					"Cursor": "Cursors",
+					"Grandma": "Grandmas",
+					"Farm": "Farms",
+					"Mine": "Mines",
+					"Factory": "Factories",
+					"Bank": "Banks",
+					"Temple": "Temples",
+					"Wizard tower": "Wizard Towers",
+					"Shipment": "Shipments",
+					"Alchemy lab": "Alchemy labs",
+					"Portal": "Portals",
+					"Time machine": "Time Machines",
+					"Antimatter condenser": "Antimatter Condensers",
+					"Prism": "Prisms",
+					"Chancemaker": "Chancemakers",
+					"Fractal engine": "Fractal Engines",
+					"Javascript console": "Javascript Consoles"
+				};
+				var buildingStrs = [];
+				var buildingKeys = Object.keys(buildingMap);
+				for (var i = 0; i < buildingKeys.length; i++) {
+					var bname = buildingKeys[i];
+					var obj = Game.Objects[bname];
+					if (obj && obj.amount > 0) {
+						buildingStrs.push(obj.amount + " " + buildingMap[bname]);
+					}
+				}
+				if (buildingStrs.length) {
+					parts.push(buildingStrs.join(", "));
+				}
+				// Cookies and CPS
+				var cookies = Game.cookies || 0;
+				var cps = Game.cookiesPs || 0;
+				parts.push(Game.Beautify(cookies) + " cookies at " + Game.Beautify(cps) + " CPS");
+				// Upgrades %
+				var upgPct = Game.maxCountedUpgrades > 0 ? Math.round((Game.UpgradesOwned / Game.maxCountedUpgrades) * 100) : 0;
+				var achPct = Game.AchievementsTotal > 0 ? Math.round((Game.AchievementsOwned / Game.AchievementsTotal) * 100) : 0;
+				parts.push(upgPct + "% of upgrades, " + achPct + "% of achievements");
+				// Golden cookies
+				parts.push((Game.goldenClicks || 0) + " GC");
+				// Milk rank (roman numeral only)
+				var milkIdx = Math.min(Math.floor(Game.milkProgress), (Game.Milks.length || 1) - 1);
+				var milkObj = Game.Milks[milkIdx];
+				var milkRoman = milkObj ? Game.romanize(milkObj.rank + 1) : "";
+				if (milkRoman) { parts.push(milkRoman + " milk"); }
+				// Prestige you would get on ascending
+				var prestigeOnAscend = Math.floor(Game.HowMuchPrestige(Game.cookiesEarned + Game.cookiesReset));
+				parts.push(prestigeOnAscend + " Prestige");
+				var text = parts.join(". ") + ".";
+				if (navigator.clipboard && navigator.clipboard.writeText) {
+					navigator.clipboard.writeText(text);
+				} else {
+					var ta = document.createElement("textarea");
+					ta.value = text;
+					document.body.appendChild(ta);
+					ta.select();
+					document.execCommand("copy");
+					document.body.removeChild(ta);
+				}
+				copyBtn.textContent = "Copied!";
+				setTimeout(function () { copyBtn.textContent = "Copy important stuff"; }, 1500);
+			} catch (ex) {
+				console.error(ex);
+			}
+		}, true);
 	}
 
 	apply();
