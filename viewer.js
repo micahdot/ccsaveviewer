@@ -528,16 +528,19 @@
 				if (buildingStrs.length) {
 					parts.push(buildingStrs.join(", "));
 				}
-				// Cookies and CPS
+				// Cookies and CPS (short numbers)
 				var cookies = Game.cookies || 0;
 				var cps = Game.cookiesPs || 0;
+				var prevAbbr = Game.abbrOn;
+				Game.abbrOn = true;
 				parts.push(Game.Beautify(cookies) + " cookies at " + Game.Beautify(cps) + " CPS");
+				Game.abbrOn = prevAbbr;
 				// Upgrades %
 				var upgPct = Game.maxCountedUpgrades > 0 ? Math.round((Game.UpgradesOwned / Game.maxCountedUpgrades) * 100) : 0;
 				var achPct = Game.AchievementsTotal > 0 ? Math.round((Game.AchievementsOwned / Game.AchievementsTotal) * 100) : 0;
 				parts.push(upgPct + "% of upgrades, " + achPct + "% of achievements");
-				// Golden cookies
-				parts.push((Game.goldenClicks || 0) + " GC");
+				// Golden cookies (this ascension)
+				parts.push((Game.goldenClicksLocal || 0) + " GC");
 				// Milk rank (roman numeral only)
 				var milkIdx = Math.min(Math.floor(Game.milkProgress), (Game.Milks.length || 1) - 1);
 				var milkObj = Game.Milks[milkIdx];
