@@ -531,13 +531,25 @@
 				// Cookies and CPS (short numbers)
 				var cookies = Game.cookies || 0;
 				var cps = Game.cookiesPs || 0;
-				var prevAbbr = Game.abbrOn;
-				Game.abbrOn = true;
-				parts.push(Game.Beautify(cookies) + " cookies at " + Game.Beautify(cps) + " CPS");
-				Game.abbrOn = prevAbbr;
-				// Upgrades %
-				var upgPct = Game.maxCountedUpgrades > 0 ? Math.round((Game.UpgradesOwned / Game.maxCountedUpgrades) * 100) : 0;
-				var achPct = Game.AchievementsTotal > 0 ? Math.round((Game.AchievementsOwned / Game.AchievementsTotal) * 100) : 0;
+				parts.push(Game.abbreviateNumber(cookies, 3, false) + " cookies at " + Game.abbreviateNumber(cps, 3, false) + " CPS");
+				// Upgrades % (excluding prestige/heavenly chip upgrades)
+				var upgTotal = 0, upgOwned = 0;
+				for (var ui = 0; ui < Game.UpgradesById.length; ui++) {
+					var u = Game.UpgradesById[ui];
+					if (u.pool === "prestige" || u.pool === "debug" || u.pool === "toggle") { continue; }
+					upgTotal++;
+					if (u.bought) { upgOwned++; }
+				}
+				var upgPct = upgTotal > 0 ? Math.round((upgOwned / upgTotal) * 100) : 0;
+				// Achievements % (excluding shadow achievements)
+				var achTotal = 0, achOwned = 0;
+				for (var ai = 0; ai < Game.AchievementsById.length; ai++) {
+					var a = Game.AchievementsById[ai];
+					if (a.pool === "shadow") { continue; }
+					achTotal++;
+					if (a.won) { achOwned++; }
+				}
+				var achPct = achTotal > 0 ? Math.round((achOwned / achTotal) * 100) : 0;
 				parts.push(upgPct + "% of upgrades, " + achPct + "% of achievements");
 				// Golden cookies (this ascension)
 				parts.push((Game.goldenClicksLocal || 0) + " GC");
