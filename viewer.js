@@ -531,7 +531,7 @@
 				// Cookies and CPS (short numbers)
 				var cookies = Game.cookies || 0;
 				var cps = Game.cookiesPs || 0;
-				parts.push(Game.abbreviateNumber(cookies, 3, false) + " cookies at " + Game.abbreviateNumber(cps, 3, false) + " CPS");
+				parts.push(Game.abbreviateNumber(cookies, 3, true) + " cookies at " + Game.abbreviateNumber(cps, 3, true) + " CPS");
 				// Upgrades % (excluding prestige/heavenly chip upgrades)
 				var upgTotal = 0, upgOwned = 0;
 				for (var ui = 0; ui < Game.UpgradesById.length; ui++) {
@@ -558,8 +558,8 @@
 				var milkObj = Game.Milks[milkIdx];
 				var milkRoman = milkObj ? Game.romanize(milkObj.rank + 1) : "";
 				if (milkRoman) { parts.push(milkRoman + " milk"); }
-				// Prestige you would get on ascending
-				var prestigeOnAscend = Math.floor(Game.HowMuchPrestige(Game.cookiesEarned + Game.cookiesReset));
+				// Prestige you would gain by ascending right now
+				var prestigeOnAscend = Math.floor(Game.HowMuchPrestige(Game.cookiesEarned + Game.cookiesReset)) - Game.prestige;
 				parts.push(prestigeOnAscend + " Prestige");
 				var text = parts.join(". ") + ".";
 				if (navigator.clipboard && navigator.clipboard.writeText) {
